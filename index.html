@@ -1,0 +1,354 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="author" content="Kemal Erdem">
+
+  <title>Extreme Learning Machine</title>
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="css/theme/beige.css">
+
+  <!-- Theme used for syntax highlighting of code -->
+  <link rel="stylesheet" href="lib/css/isbl-editor-light.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  </script>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+    <section>
+      <h2>Extreme Learning Machine</h2>
+      <small>by Kemal Erdem | <a href="https://erdem.pl">@burnpiro</a></small>
+    </section>
+    <section>
+      <h2>ELM what?</h2>
+      <small>
+        <ul>
+					<li><strong>Guang-Bin Huang</strong> - "Extreme learning machine: Theory and applications" 2006</li>
+					<li>Does not depend on backpropagation!</li>
+        </ul>
+      </small>
+    </section>
+		<section>
+			<strong>ML Basics - SLFN</strong>
+			<p>
+        <img src="assets/shfn.svgz">
+        <small class="caption">Single hidden Layer Feedforward Neural network © Shifei Ding under CC BY 3.0</small>
+			</p>
+		</section>
+    <section>
+      <strong>ML Basics - Equations</strong>
+      <p>
+        $$
+        f_L(x) = \sum_{i=1}^{L}\beta_ih_i(x) = \sum_{i=1}^{L}\beta_ig(w_i * x_j + b_i), j = 1,...,N
+        $$
+      </p>
+      <p class="fragment fade-ou">
+        $$
+        T = H\beta
+        $$
+        <span style="display: inline">Where $H$ is called the hidden layer output matrix</span>
+      </p>
+    </section>
+    <section>
+      <strong>ML Basics - Vector version</strong>
+      <p>
+        $$
+        H = \begin{bmatrix}
+        g(w_1 * x_1 + b_1) & ... & g(w_L*x_1+b_L) \\
+        \vdots & ... & \vdots \\
+        g(w_1 * x_N + b_1) & ... & g(w_L * x_N + b_L)
+        \end{bmatrix}_{N \times L}
+        $$
+        $$
+        \beta = \begin{bmatrix}
+        \beta_1^T \\
+        \vdots \\
+        \beta_L^T
+        \end{bmatrix}_{L \times m}
+        T = \begin{bmatrix}
+        t_1^T \\
+        \vdots \\
+        t_N^T
+        \end{bmatrix}_{N \times m}
+        $$
+      </p>
+    </section>
+    <section>
+      <strong>Theorem 1</strong>
+      <p>
+        $$x_i \in R^n, t_i \in R^m$$
+        $$g: R \rightarrow R$$
+        <span style="display: inline">if <strong>$g$</strong> is infinitely differentiable then <strong>$H$</strong> is invertible</span>
+      </p>
+      <p class="fragment fade-ou">
+        $$
+        \frac{\delta g(x)}{\delta x} = \frac{\delta}{\delta x} \frac{1}{1+\exp^{-x}} = \frac{1}{1+\exp^{-x}} * \left(1 - \frac{1}{1+\exp^{-x}} \right)
+        $$
+      </p>
+    </section>
+    <section>
+      <strong>Theorem 2</strong>
+      <p>
+        $$L \leq N$$
+        <span style="display: inline">$N$ is a number of distinct samples $(x_i, t_i)$</span>
+        <span style="display: inline">$L$ is a number of hidden neurons</span>
+        $$|| H_{N \times L}\beta_{L \times m} - T_{N \times m} || < \epsilon, \epsilon > 0$$
+      </p>
+    </section>
+    <section>
+      <strong>Matrix inverse solution</strong>
+      <p>
+        $$|| H\hat\beta - T || = \min_{\beta}|| H\beta - T ||$$
+      </p>
+      <p class="fragment fade-ou">
+        $$
+        \hat\beta = H^{\dagger}T
+        $$
+        <small><span style="display: inline">Where $H^{\dagger}$ is the Moore-Penrose generalized inverse of $H$</span></small>
+        <small><a href="https://www.ntu.edu.sg/home/egbhuang/pdf/ELM-NC-2006.pdf">ELM-NC-2006 - Theorem 5.1 -> C.R. Rao, S.K. Mitra 1971</a></small>
+      </p>
+    </section>
+    <section>
+      <h2>ELM algorithm</h2>
+        <ol>
+          <li style="line-height: 1">Randomly assign weight $w_i$ and bias $b_i$, $i = 1,...L$</li>
+          <li>Calculate hidden layer output <strong>H</strong></li>
+          <li>Calculate output weight matrix $\hat\beta = H^\dagger T$</li>
+          <li style="line-height: 2">Use $\hat\beta$ to make a prediction on new data $T = H\hat\beta$</li>
+        </ol>
+    </section>
+    <section>
+      <h2>Live example</h2>
+      <a href="http://localhost:8888/notebooks/ELM%20example.ipynb#" target="_blank"><img src="assets/jupyter_logo.png"/></a>
+      <small>Offline version available here: <a href="https://github.com/burnpiro/elm-pure/blob/master/ELM%20example.ipynb" target="_blank">https://github.com/burnpiro/elm-pure/blob/master/ELM%20example.ipynb</a></small>
+    </section>
+    <section>
+      <strong>Network performance</strong>
+      <small>$$
+      \begin{array} {|r|r|}\hline \text{Problems samples} & \text{Training samples} & \text{Testing} & \text{Attributes} & \text{Classes} \\ \hline \text{Satellite image} & 4400 & 2000 & 36 & 7 \\
+      \hline \text{Image segmentation} & 1500 & 810 & 18 & 7 \\
+      \hline \text{Shuttle} & 43500 & 14500 & 9 & 7 \\
+      \hline \text{Banana} & 5200 & 490000 & 2 & 2 \\ \hline \end{array}
+      $$
+      </small>
+      <small><strong>Testing env: Pentium 4, 1.9 GHZ CPU (it's 2006!!!)</strong></small>
+    </section>
+    <section>
+      <strong>Network performance</strong>
+      <small style="font-size: 0.45em; margin-left: -8vw;">
+        $$
+        \begin{array} {|rr|}
+        \hline \text{Problems} & \text{Algorithms} & \text{Training [s]} & \text{Testing[s]} & \text{Acc Train [%]} & \text{Acc Train Dev [%]} & \text{Acc Test [%]} & \text{Acc Test Dev [%]} & \text{Nodes}\\
+        \hline \text{Satellite_image} & ELM & 14.92 & 0.34 & 93.52 & 1.46 & 89.04 & 1.50 & 500 \\
+         & BP & 12561 & 0.08 & 95.26 & 0.97 & 82.34 & 1.25 & 100 \\
+        \hline & & & & & & & & \\
+        \hline \text{Image_segment} & ELM & 1.40 & 0.07 & 97.35 & 0.32 & 95.01 & 0.78 & 200 \\
+         & BP & 4745.7 & 0.04 & 96.92 & 0.45 & 86.27 & 1.80 & 100 \\
+        \hline & & & & & & & & \\
+        \hline \text{Shuttle} & ELM & 5.740 & 0.23 & 99.65 & 0.12 & 99.40 & 0.12 & 50 \\
+         & BP & 6132.2 & 0.22 & 99.77 & 0.10 & 99.27 & 0.13 & 50 \\
+        \hline & & & & & & & & \\
+        \hline\text{Banana} & ELM & 2.19 & 20.06 & 92.36 & 0.17 & 91.57 & 0.25 & 100 \\
+         & BP & 6132.2 & 21.10 & 90.26 & 0.27 & 88.09 & 0.70 & 100 \\
+        \hline  \end{array}
+        $$
+      </small>
+    </section>
+    <section>
+      <strong>Early evolution of ELMs</strong>
+      <small>
+      <ol>
+        <li><strong>I-ELM</strong> (incremental) 2006 - add new nodes to hidden layer and froze existing ones</li>
+        <li><strong>P-ELM</strong> (pruning) 2008 - start with a huge network and remove nodes</li>
+        <li><span style="display: inline"><strong>Regularized ELM</strong> 2009 - $\hat\beta = \left (\frac{1}{C}+H^TH \right )^{-1} H^TT$</span></li>
+        <li><strong>TS-ELM</strong> (two-stage) 2010 - combination of I-ELM and P-ELM</li>
+        <li><strong>V-ELM</strong> (voting) 2013 - create many ELMs and remove nodes base on misclassification results</li>
+        <li><span style="display: inline; line-height: 1.5"><strong>KELM</strong> (kernel) 2014 - kernel function instead of $HH^T$</span></li>
+        <li><span style="display: inline;"><strong>ELM-AE</strong> (autoencoder) 2014 - unsupervised mapping</span></li>
+      </ol>
+      </small>
+    </section>
+    <section>
+      <strong>Changes in ELM structure - ELM-LC</strong>
+      <p style="grid-template-columns: 40% 60%">
+        <img src="assets/elm-lc.png" style="max-height: 50vh"/>
+        <span>$$
+        H^{\dagger} = \begin{cases}
+          (H^THH^T)^{-1} & N \leq L \\
+          (H^TH)^{-1}H & N > L
+        \end{cases}
+          $$</span>
+      </p>
+    </section>
+    <section>
+      <strong>ELM goes Deep Learning - (TELM, MELM, DELM)</strong>
+      <img src="assets/melm.svgz" style="transform: rotate(90deg);"/>
+      <small class="caption">A Multiple Hidden Layers Extreme Learning Machine Method and Its Application 2017 - D. Xiao, B. Li, and Y. Mao</small>
+    </section>
+    <section data-background-image="assets/mlelm.svgz" data-background-size="100vh">
+      <small class="caption" style="transform: translateY(70vh)">A Multiple Hidden Layers Extreme Learning Machine Method and Its Application 2017 - D. Xiao, B. Li, and Y. Mao</small>
+    </section>
+    <section data-background-image="assets/delm.svgz" data-background-size="85vh">
+      <small class="caption" style="transform: translateY(70vh)">A Multiple Hidden Layers Extreme Learning Machine Method and Its Application 2017 - D. Xiao, B. Li, and Y. Mao</small>
+    </section>
+    <section>
+      <strong>Benchmarks</strong>
+      <p style="font-size: 0.45em;">
+        $$
+        \begin{array} {|rr|}
+        \hline \text{Dataset} & \text{Algorithms} & \text{Acc Test [%]} \\
+        \hline \text{CIFAR-10} & \text{ELM 1000 (1x)} & 10.64 \\
+        & \text{ELM 3000 (20x)} & 71.40 \\
+        & \text{ELM 3500 (30x)} & 87.55 \\
+        & \text{ReNet (2015)} & 87.65 \\
+        & \text{EfficientNet (2019)} & 98.90 \\
+        \hline & & & & & & & & \\
+        \hline \text{MNIST} & \text{ELM 512} & 92.15 \\
+        & \text{DELM 15000} & 99.43 \\
+        & \text{RNN} & 99.55 \\
+        & \text{BP 6-layer 5700} & 99.65 \\
+        \hline  \end{array}
+        $$
+      </p>
+    </section>
+    <section>
+      <strong>Image Super-Resolution by KELM</strong>
+      <p style="grid-template-columns: 50% 50%">
+        <img src="assets/kelm-im.png" style="max-height: 50vh"/>
+        <img src="assets/kelm-im-ex.png" style="max-height: 50vh"/>
+      </p>
+      <small class="caption" style="">Image super-resolution by extreme learning machine, 2012 - Le An, Bir Bhanu</small>
+    </section>
+    <section>
+      <strong>Wind speed prediction in France</strong>
+      <img src="assets/wind-elm.png" style="max-height: 50vh"/>
+      <small class="caption" style="">An efficient scenario-based and fuzzy self-adaptive learning particle swarm optimization approach for dynamic economic emission dispatch considering load and wind power uncertainties. 2013 - Bahmani-Firouzi B, Farjah E, Azizipanah-Abarghooee R</small>
+    </section>
+    <section>
+      <strong>Energy price forecasting</strong>
+      <img src="assets/energy-elm.png" style="max-height: 50vh"/>
+      <small class="caption" style="">Electricity price forecasting with extreme learning machine and bootstrapping 2012 - X. Chen, Z.Y. Dong, K. Meng, Y. Xu, K.P. Wong, H.W. Ngan</small>
+    </section>
+    <section>
+      <strong>3D shape segmentation</strong>
+      <p style="grid-template-columns: 50% 50%">
+        <img src="assets/shape-elm.png" style="max-height: 50vh"/>
+        <img src="assets/shape-elm-ex.png" style="max-height: 50vh"/>
+      </p>
+      <small class="caption" style="">3D Shape Segmentation and Labeling via Extreme Learning Machine 2015 - J. Tang, C. Deng and G. Huang</small>
+    </section>
+    <section>
+      <strong>Object tracking</strong>
+      <p style="grid-template-columns: 50% 50%">
+        <img src="assets/obj-elm.png" style="max-height: 50vh"/>
+        <img src="assets/obj-ex.png" style="max-height: 50vh"/>
+      </p>
+      <small class="caption" style="">Extreme Learning Machine for Multilayer Perceptron 2014 - Zhige Xie, Kai Xu, Ligang Liu, Yueshan Xiong</small>
+    </section>
+    <section>
+      <h2>References</h2>
+      <small>
+      <ul>
+        <li>"Extreme learning machine: Theory and applications" 2006 G.B. Huang, Q.Y. Zhu, C.K. Siew</li>
+        <li>“Extreme learning machine for regression and multiclass classification” 2012 - G.-B. Huang, H. Zhou, X. Ding and R. Zhang</li>
+        <li>"Clustering in Extreme Learning Machine Feature Space" 2014 - He Qing, Xin Jin, Changying Du, Fuzhen Zhuang and Zhongzhi Shi</li>
+        <li>“Deep Extreme Learning Machine and Its Application in EEG Classification” 2015 - S. Ding, N. Zhang, X. Xu, L. Guo and J. Zhang</li>
+        <li>"Extreme Learning Machine: A Review." 2017- Albadr, Musatafa & Tiuna, Sabrina.</li>
+        <li>“A Multiple Hidden Layers Extreme Learning Machine Method and Its Application” 2017 - Dong Xiao, Beijing Li and Yachun Mao</li>
+      </ul>
+      </small>
+    </section>
+    <section>
+      <h2>References 2</h2>
+      <small>
+        <ul>
+          <li>"Extreme Learning Machines" 2013 Erik Cambria, Guang-Bin Huang</li>
+          <li>“EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks” 2019 - Mingxing Tan, Quoc V. Le</li>
+          <li>"ReNet: A Recurrent Neural Network Based Alternative to Convolutional Networks." 2015 - Visin, F.; Kastner, K.; Cho, K.; Matteucci, M.; Courville, A.; Bengio, Y.</li>
+          <li>“Deep, big, simple neural nets for handwritten digit recognition." 2010 - Cireşan DC, Meier U, Gambardella LM, Schmidhuber J.</li>
+          <li>"Fast, Simple and Accurate Handwritten Digit Classification by Training Shallow Neural Network Classifiers with the 'Extreme Learning Machine' Algorithm". 2015 - McDonnell MD, Tissera MD, Vladusich T, van Schaik A, Tapson J.</li>
+          <li>"A Survey of Handwritten Character Recognition with MNIST and EMNIST." 2019 - Alejandro Baldominos, Yago Saez and Pedro Isasi</li>
+        </ul>
+      </small>
+    </section>
+    <section>
+      <h2>References 3</h2>
+      <small>
+        <ul>
+          <li>"An Insight into Extreme Learning Machines: Random Neurons, Random Features and Kernels" 2014 Guang-Bin Huang</li>
+          <li>“Extreme Learning Machine with Local Connections” 2018 - Feng Li, Sibo Yang, Huanhuan Huang, and Wei Wu</li>
+          <li>"Image super-resolution by extreme learning machine," 2012 - L. An and B. Bhanu,</li>
+          <li>“An efficient scenario-based and fuzzy self-adaptive learning particle swarm optimization approach for dynamic economic emission dispatch considering load and wind power uncertainties." 2013 - Bahmani-Firouzi B, Farjah E, Azizipanah-Abarghooee R</li>
+          <li>"Electricity price forecasting with extreme learning machine and bootstrapping" 2012 - X. Chen, Z.Y. Dong, K. Meng, Y. Xu, K.P. Wong, H.W. Ngan</li>
+          <li>"3D Shape Segmentation and Labeling via Extreme Learning Machine" 2014 - Zhige Xie, Kai Xu, Ligang Liu, Yueshan Xiong</li>
+        </ul>
+      </small>
+    </section>
+    <section>
+      <h2>Thanks</h2>
+      <blockquote>"There's no such thing as a stupid question!"</blockquote>
+      <p>
+        <small>Kemal Erdem | @burnpiro</small><br/>
+        <small><a href="https://erdem.pl">https://erdem.pl</a></small><br/>
+      </p>
+    </section>
+  </div>
+</div>
+
+<script src="js/reveal.js"></script>
+
+<script>
+  // More info about config & dependencies:
+  // - https://github.com/hakimel/reveal.js#configuration
+  // - https://github.com/hakimel/reveal.js#dependencies
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: false,
+    slideNumber: false,
+    overview: true,
+    center: true,
+    navigationMode: 'default',
+    fragmentInURL: false,
+    embedded: false,
+    preloadIframes: null,
+    autoSlide: 0,
+    autoSlideStoppable: true,
+    defaultTiming: 120,
+    mouseWheel: false,
+    previewLinks: false,
+    transition: 'slide', // none/fade/slide/convex/concave/zoom
+    transitionSpeed: 'default', // default/fast/slow
+    backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+    display: 'block',
+    math: {
+      mathjax: 'plugin/math/MathJax.js',
+      config: 'TeX-AMS_HTML-full', // See http://docs.mathjax.org/en/latest/config-files.html
+      // pass other options into `MathJax.Hub.Config()`
+      TeX: {Macros: {RR: "{\\bf R}"}}
+    },
+    dependencies: [
+      {src: 'plugin/markdown/marked.js'},
+      {src: 'plugin/markdown/markdown.js'},
+      {src: 'plugin/highlight/highlight.js'},
+      // Zoom in and out with Ctrl+click
+      {src: 'plugin/zoom-js/zoom.js', async: true},
+      {src: 'plugin/notes/notes.js', async: true},
+      // MathJax
+      {src: 'plugin/math/math.js', async: true}
+    ]
+  });
+</script>
+</body>
+</html>
