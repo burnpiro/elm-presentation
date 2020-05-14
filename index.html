@@ -47,10 +47,28 @@
       </p>
     </section>
     <section>
-      <strong>ML Basics - Equations</strong>
+      <strong>ELM</strong>
+      <p>
+        <img style="height: 50vh" src="assets/ELM.png">
+        <small class="caption">ELM structure © Shifei Ding under CC BY 3.0</small>
+      </p>
+    </section>
+    <section>
+      <strong>Theorem</strong>
+      <p>
+        $$|| H_{N \times L}\beta_{L \times m} - T_{N \times m} || < \epsilon, \epsilon > 0$$
+
+        <span style="display: inline">For $L \leq N$</span>
+        <span style="display: inline">if <strong>$g$</strong> is infinitely differentiable then <strong>$H$</strong> is invertible</span>
+      </p>
+      <small>More on <a href="https://erdem.pl/2020/05/introduction-to-extreme-learning-machines">https://erdem.pl/2020/05/introduction-to-extreme-learning-machines</a></small>
+    </section>
+    <section>
+      <strong>ELM - Equations</strong>
       <p>
         $$
-        f_L(x) = \sum_{i=1}^{L}\beta_ih_i(x) = \sum_{i=1}^{L}\beta_ig(w_i * x_j + b_i), j = 1,...,N
+        \small
+        o_j = \sum_{i=1}^{L}\beta_ig_i(x) = \sum_{i=1}^{L}\beta_ig(w_i * x_j + b_i), j = 1,...,N
         $$
       </p>
       <p class="fragment fade-ou">
@@ -61,7 +79,7 @@
       </p>
     </section>
     <section>
-      <strong>ML Basics - Vector version</strong>
+      <strong>ELN - Vector version</strong>
       <p>
         $$
         H = \begin{bmatrix}
@@ -82,29 +100,6 @@
         t_N^T
         \end{bmatrix}_{N \times m}
         $$
-      </p>
-    </section>
-    <section>
-      <strong>Theorem 1</strong>
-      <p>
-        $$x_i \in R^n, t_i \in R^m$$
-        $$g: R \rightarrow R$$
-        <span style="display: inline">if <strong>$g$</strong> is infinitely differentiable then <strong>$H$</strong> is invertible</span>
-      </p>
-      <p class="fragment fade-ou">
-        $$
-        \frac{\delta g(x)}{\delta x} = \frac{\delta}{\delta x} \frac{1}{1+\exp^{-x}} = \frac{1}{1+\exp^{-x}} * \left(1 -
-        \frac{1}{1+\exp^{-x}} \right)
-        $$
-      </p>
-    </section>
-    <section>
-      <strong>Theorem 2</strong>
-      <p>
-        $$L \leq N$$
-        <span style="display: inline">$N$ is a number of distinct samples $(x_i, t_i)$</span>
-        <span style="display: inline">$L$ is a number of hidden neurons</span>
-        $$|| H_{N \times L}\beta_{L \times m} - T_{N \times m} || < \epsilon, \epsilon > 0$$
       </p>
     </section>
     <section>
